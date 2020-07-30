@@ -282,6 +282,20 @@
 
     function bindData(template, data, settings) {
         data = data || {};
+		
+		processElements("data-each", template, data, settings, function ($elem, value) {
+			var parent = $elem.parent(),
+				newOptions = $.extend(
+					settings,
+					{ append: !settings.prepend && true }
+				);
+			$elem.remove();
+			$(value).each(function () {
+				parent.loadTemplate($elem.clone(), this, newOptions);
+			});
+		}, function($elem) {
+			$elem.remove();
+		});
 
         processElements("data-content", template, data, settings, function ($elem, value) {
             $elem.html(applyFormatters($elem, value, "content", settings));
